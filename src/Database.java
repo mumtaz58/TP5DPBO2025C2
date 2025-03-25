@@ -130,8 +130,8 @@ public class Database {
             );
             statement.setString(1, nim);
 
-            statement.executeUpdate();
-            return true;
+            int rowsAffected = statement.executeUpdate();
+            return rowsAffected > 0;
         } catch (SQLException e) {
             System.out.println("Error deleting data: " + e.getMessage());
             return false;

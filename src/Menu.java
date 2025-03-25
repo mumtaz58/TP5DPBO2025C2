@@ -96,6 +96,10 @@ public class Menu extends JFrame {
         cancelButton.setBounds(230, 150, 100, 25);
         add(cancelButton);
 
+        deleteButton = new JButton("Delete");
+        deleteButton.setBounds(340, 150, 100, 25);
+        add(deleteButton);
+
         // Table
         String[] columnNames = {"No", "NIM", "Nama", "Jenis Kelamin", "Jurusan"};
         DefaultTableModel model = new DefaultTableModel(columnNames, 0);
@@ -133,6 +137,14 @@ public class Menu extends JFrame {
                 } else {
                     updateData();
                 }
+            }
+        });
+
+        // Delete button listener
+        deleteButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                deleteData();
             }
         });
 
@@ -254,6 +266,54 @@ public class Menu extends JFrame {
                         JOptionPane.INFORMATION_MESSAGE
                 );
                 break;
+        }
+    }
+
+    private void deleteData() {
+        // Check if a row is selected
+        if (selectedIndex < 0 || selectedIndex >= listMahasiswa.size()) {
+            JOptionPane.showMessageDialog(
+                    null,
+                    "Pilih data mahasiswa yang akan dihapus",
+                    "Peringatan",
+                    JOptionPane.WARNING_MESSAGE
+            );
+            return;
+        }
+
+        // Confirm deletion
+        int confirm = JOptionPane.showConfirmDialog(
+                null,
+                "Apakah Anda yakin ingin menghapus data ini?",
+                "Konfirmasi Hapus",
+                JOptionPane.YES_NO_OPTION
+        );
+
+        if (confirm == JOptionPane.YES_OPTION) {
+            // Get NIM of the selected mahasiswa
+            String nim = listMahasiswa.get(selectedIndex).getNim();
+
+            // Try to delete from database
+            boolean result = database.deleteData(nim);
+
+            if (result) {
+                // Refresh the list and clear form
+                populateListFromDatabase();
+                clearForm();
+                JOptionPane.showMessageDialog(
+                        null,
+                        "Data berhasil dihapus",
+                        "Sukses",
+                        JOptionPane.INFORMATION_MESSAGE
+                );
+            } else {
+                JOptionPane.showMessageDialog(
+                        null,
+                        "Gagal menghapus data",
+                        "Kesalahan",
+                        JOptionPane.ERROR_MESSAGE
+                );
+            }
         }
     }
 
